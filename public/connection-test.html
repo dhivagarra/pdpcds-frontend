@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend-Backend Connection Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .test-result { padding: 10px; margin: 10px 0; border-radius: 5px; }
+        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background-color: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+    </style>
+</head>
+<body>
+    <h1>🔗 Frontend-Backend Connection Test</h1>
+    
+    <div class="info">
+        <h3>Current Configuration:</h3>
+        <p><strong>Frontend:</strong> http://127.0.0.1:3000</p>
+        <p><strong>Backend:</strong> http://127.0.0.1:8000</p>
+        <p><strong>Connection:</strong> Direct API calls (no proxy)</p>
+    </div>
+
+    <h2>Connection Tests:</h2>
+    
+    <button onclick="testBasicHealth()">Test Basic Health (/health)</button>
+    <button onclick="testDetailedHealth()">Test Detailed Health (/api/v1/health/)</button>
+    <button onclick="testDatabaseHealth()">Test Database Health (/api/v1/health/database)</button>
+    
+    <div id="results"></div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8000';
+        
+        function displayResult(testName, success, message, data = null) {
+            const resultsDiv = document.getElementById('results');
+            const resultClass = success ? 'success' : 'error';
+            const icon = success ? '✅' : '❌';
+            
+            const resultHtml = `
+                <div class="test-result ${resultClass}">
+                    <strong>${icon} ${testName}</strong><br>
+                    ${message}
+                    ${data ? `<br><small>Response: ${JSON.stringify(data, null, 2)}</small>` : ''}
+                </div>
+            `;
+            
+            resultsDiv.innerHTML += resultHtml;
+        }
+        
+        async function testBasicHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/health`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResult('Basic Health Check', true, `Status: ${data.status}`, data);
+                } else {
+                    displayResult('Basic Health Check', false, `HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    displayResult('Basic Health Check', false, 'CORS Error: Backend needs CORS configuration. See CORS_FIX_GUIDE.md');
+                } else {
+                    displayResult('Basic Health Check', false, `Network Error: ${error.message}`);
+                }
+            }
+        }
+        
+        async function testDetailedHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/health/`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResult('Detailed Health Check', true, `Status: ${data.status}`, data);
+                } else {
+                    displayResult('Detailed Health Check', false, `HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    displayResult('Detailed Health Check', false, 'CORS Error: Backend needs CORS configuration. See CORS_FIX_GUIDE.md');
+                } else {
+                    displayResult('Detailed Health Check', false, `Network Error: ${error.message}`);
+                }
+            }
+        }
+        
+        async function testDatabaseHealth() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/v1/health/database`);
+                const data = await response.json();
+                
+                if (response.ok) {
+                    displayResult('Database Health Check', true, `Status: ${data.status}, DB: ${data.database_status}`, data);
+                } else {
+                    displayResult('Database Health Check', false, `HTTP ${response.status}: ${response.statusText}`);
+                }
+            } catch (error) {
+                if (error.message.includes('CORS')) {
+                    displayResult('Database Health Check', false, 'CORS Error: Backend needs CORS configuration. See CORS_FIX_GUIDE.md');
+                } else {
+                    displayResult('Database Health Check', false, `Network Error: ${error.message}`);
+                }
+            }
+        }
+        
+        // Clear results
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+        
+        // Add clear button
+        document.addEventListener('DOMContentLoaded', function() {
+            const clearBtn = document.createElement('button');
+            clearBtn.textContent = 'Clear Results';
+            clearBtn.onclick = clearResults;
+            clearBtn.style.backgroundColor = '#6c757d';
+            clearBtn.style.color = 'white';
+            clearBtn.style.border = 'none';
+            clearBtn.style.borderRadius = '3px';
+            
+            const buttonsDiv = document.querySelector('h2').nextElementSibling;
+            buttonsDiv.appendChild(clearBtn);
+        });
+    </script>
+</body>
+</html>

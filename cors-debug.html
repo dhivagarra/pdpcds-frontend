@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CORS Debug Test</title>
+</head>
+<body>
+    <h1>CORS Debug Test</h1>
+    <div id="result"></div>
+    
+    <script>
+        // Test CORS from port 3001
+        fetch('http://127.0.0.1:8000/health')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: green;">✅ SUCCESS: ' + JSON.stringify(data) + '</p>';
+            })
+            .catch(error => {
+                document.getElementById('result').innerHTML = 
+                    '<p style="color: red;">❌ CORS ERROR: ' + error.message + '</p>';
+                console.error('CORS Error:', error);
+            });
+    </script>
+</body>
+</html>
