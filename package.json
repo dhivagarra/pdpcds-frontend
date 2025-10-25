@@ -5,9 +5,11 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "npx tsc && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start:dev": "npm run dev",
+    "start:prod": "npm run preview"
   },
   "dependencies": {
     "@emotion/react": "^11.11.1",
@@ -31,7 +33,7 @@
     "eslint": "^8.53.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.4",
-    "typescript": "^5.2.2",
+    "typescript": "^5.9.3",
     "vite": "^4.5.0"
   }
 }

@@ -13,7 +13,7 @@ import {
 } from '../types/api';
 
 // Base API configuration - use environment variables for direct connection
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://47.129.99.160:8000/';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
@@ -26,12 +26,10 @@ const apiClient = axios.create({
 });
 
 // Request interceptor for logging
-apiClient.interceptors.request.use(
+axios.interceptors.request.use(
   (config) => {
     console.log(`🌐 API Request: ${config.method?.toUpperCase()} ${config.url}`);
-    if (config.data) {
-      console.log('📤 Request Data:', config.data);
-    }
+    console.log('📤 Request Data:', config.data);
     return config;
   },
   (error) => {
