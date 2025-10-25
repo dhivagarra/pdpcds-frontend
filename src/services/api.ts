@@ -13,7 +13,7 @@ import {
 } from '../types/api';
 
 // Base API configuration - use environment variables for direct connection
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://47.129.99.160:8000/';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://pdpcdsbe.devaswom.org/';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
